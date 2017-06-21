@@ -25,7 +25,11 @@ public class Person {
 		setEmail(email);
 		setAddress(address);
 	}
-	
+	/**
+	 * Crea nueva persona con formato:
+	 * "name surname;email;phone;address"
+	 * @param contactFileFormat
+	 */
 	//OTRO CONSTRUCTOR (polimorfismo)
 	public Person(String contactFileFormat){
 		String[] values = contactFileFormat.split(";");

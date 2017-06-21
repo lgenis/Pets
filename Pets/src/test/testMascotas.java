@@ -7,6 +7,7 @@ import main.Ave;
 import main.Canido;
 import main.Felino;
 import main.ListaMascotas;
+import main.Person;
 import main.Roedor;
 
 public class testMascotas {
@@ -83,6 +84,52 @@ public class testMascotas {
 			}
 			
 		}
+	}
+	
+	@Test
+	public void testListaMascotas3(){
+		
+		ListaMascotas list = new ListaMascotas();
+		
+		
+		Canido can = new Canido("Firulais", 40, 0.5f, 0.5f);
+		Person propietario=new Person("Fredy Campino; 0034784515; fredy@fredy.com; Calle del Cifo 1");
+		can.setPropietario(propietario);
+		list.add(can);
+		
+		//list.add(new Canido("Firulais", 40, 0.5f, 0.5f));
+		list.add(new Felino("Garfield", 20, 0.2f, 0.3f));
+		list.get(list.size()-1).setPropietario(new Person("Geronimo Diaz; 0034568488; geronimo@diaz.com; Calle Violeta 2"));
+		
+		
+		list.add(new Ave("Parro", 0.5f, 0.1f, 0.15f));
+		list.get(list.size()-1).setPropietario(new Person("Pedro Lopez; 0034561103; pedro@lopez.com; Calle Pere Sert 33"));
+		
+		list.add(new Roedor("Hamm", .2f, 0.1f, 0.05f));
+		list.get(list.size()-1).setPropietario(new Person("Hammond Gomez; 00345818; hammond@gomez.com; Calle Enginyeria 2"));
+	
+	
+		//Error porque no extiende de Mascota
+		//list.add(new Zapato())
+		Assert.assertNotNull(list.get(0));
+		Assert.assertNotNull(list.get(1));
+		Assert.assertNotNull(list.get(2));
+		Assert.assertNotNull(list.get(3));
+		
+		String nombresEntrada[]= new String[]{"fredy", "geronimo", "pedro", "hammond"};
+		
+		for(int i=0; i<list.size(); i++){
+			System.out.println("Mascota: " 
+							+ list.get(i).getNombre()
+							+ "\nDuenno Nombre: " + list.get(i).getPropietario().getFullName() 
+							+ "\nDuenno email: " + list.get(i).getPropietario().getEmail()
+							+ "\nDuenno phone: " + list.get(i).getPropietario().getPhone()
+							+ "\nDuenno direccion: " + list.get(i).getPropietario().getAddress());
+			
+			Assert.assertEquals(list.get(i).getNombre(), list.findByOwnerName(nombresEntrada[i])[0].getNombre());
+			Assert.assertEquals(list.get(i).getNombre(), list.findByOwnerEmail(nombresEntrada[i])[0].getNombre());
+		}
+		
 	
 	
 	}

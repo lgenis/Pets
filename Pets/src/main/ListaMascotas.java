@@ -51,12 +51,44 @@ public class ListaMascotas {
 		
 	}
 	
-	public Mascota[] findByOwnerName(){
-		return null;
+	
+	
+	public Mascota[] findByOwnerName(String name){
+		int j=0;
+		Mascota retArrayMascota[];
+		for (Mascota masc: arrayMascotas){
+			if (masc.getPropietario().getFullName().startsWith(name)){
+				j++;
+			}
+		}
+		retArrayMascota = new Mascota[j];
+		j=0;
+		for (Mascota masc: arrayMascotas){
+			if (masc.getPropietario().getFullName().startsWith(name)){
+				retArrayMascota[j]=masc;
+				j++;
+			}
+		}
+		return retArrayMascota;
 	}
 	
-	public Mascota[] findByOwnerEmail(){
-		return null;
+	public Mascota[] findByOwnerEmail(String email){
+		int j=0;
+		Mascota retArrayMascota[];
+		for (Mascota masc: arrayMascotas){
+			if (masc.getPropietario().getEmail().startsWith(email)){
+				j++;
+			}
+		}
+		retArrayMascota = new Mascota[j];
+		j=0;
+		for (Mascota masc: arrayMascotas){
+			if (masc.getPropietario().getEmail().startsWith(email)){
+				retArrayMascota[j]=masc;
+				j++;
+			}
+		}
+		return retArrayMascota;
 	}
 	
 	public int size(){

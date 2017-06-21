@@ -27,6 +27,7 @@ public abstract class Mascota {
 		this.peso=peso;
 		this.altura=altura;
 		this.largo=largo;
+		
 	}
 	
 	public Mascota(String nombre){
