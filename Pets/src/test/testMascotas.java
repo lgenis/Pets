@@ -94,7 +94,9 @@ public class testMascotas {
 		
 		Canido can = new Canido("Firulais", 40, 0.5f, 0.5f);
 		Person propietario=new Person("Fredy Campino; 0034784515; fredy@fredy.com; Calle del Cifo 1");
+		
 		can.setPropietario(propietario);
+		
 		list.add(can);
 		
 		//list.add(new Canido("Firulais", 40, 0.5f, 0.5f));
