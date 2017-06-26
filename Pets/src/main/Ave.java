@@ -30,6 +30,14 @@ public class Ave extends Mascota {
 		this.calidadPlumas = calidadPlumas;
 	}
 	
+	@Override
+	protected String getTypeClass() {
+		return getClass().getName();
+	}
 	
+	@Override
+	public String toString() {
+		return super.toString() + " tipo Ave"; 
+	}
 
 }

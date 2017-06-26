@@ -29,6 +29,15 @@ public class Roedor extends Mascota {
 	public void setCalidadPelaje(float calidadPelaje) {
 		this.calidadPelaje = calidadPelaje;
 	}
-
+	
+	@Override
+	protected String getTypeClass() {
+		return getClass().getName();
+	}
+	
+	@Override
+	public String toString() {
+		return super.toString() + " tipo Roedor"; 
+	}
 	
 }

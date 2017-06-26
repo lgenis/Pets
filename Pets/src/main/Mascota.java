@@ -13,7 +13,9 @@ package main;
  */
 
 public abstract class Mascota {
-
+	//Obligatorio para que funcione GSON
+	final public String typeClass;
+	
 	private Person propietario;
 	
 	private String nombre;
@@ -21,8 +23,13 @@ public abstract class Mascota {
 	private float altura;
 	private float largo;
 	
+	public Mascota(){
+		typeClass=getTypeClass();
+	}
+	
 	
 	public Mascota(String nombre, float peso, float altura, float largo){
+		typeClass=getTypeClass();
 		this.nombre=nombre;
 		this.peso=peso;
 		this.altura=altura;
@@ -30,15 +37,23 @@ public abstract class Mascota {
 		
 	}
 	
+
 	public Mascota(String nombre){
-		this.nombre=nombre;
+		typeClass= getTypeClass(); 
+		this.setNombre(nombre); 
 	}
 	
-	//metodo que se redefinira
-	public float getEstadoNutricion(){
-		return 0;
-	}
+
+	//metodo que se redefinira 
+	public abstract float getEstadoNutricion(); 
 	
+	/**
+	 * Metodo que debe retornar el nombre de la clase, 
+	 * Use getClass().getName();  debe definirse en todos los objetos que extienden de
+	 * Mascota
+	 * @return
+	 */
+	protected abstract String getTypeClass(); 
 	/**
 	 * Metodo abstracto que debe ser definido en las clases que extienden
 	 * de esta clase (Mascota). 

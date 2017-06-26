@@ -31,4 +31,13 @@ public class Felino extends Mascota {
 		this.calidadGarras = calidadGarras;
 	}
 	
+	@Override
+	protected String getTypeClass() {
+		return getClass().getName();
+	}
+	
+	@Override
+	public String toString() {
+		return super.toString() + " tipo Felino"; 
+	}
 }

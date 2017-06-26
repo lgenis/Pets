@@ -28,11 +28,6 @@ public class Canido extends Mascota{
 
 	
 	
-	@Override
-	public String toString(){
-		return "Esto es un perro";
-	}
-	
 	//Este Override define el metodo abstracto. Implementa el metodo abstracto (triangulito verde)
 	//Se usa el mismo nombre que un override/sobreescrbir normal (triangulito blanco)
 	@Override
@@ -52,5 +47,13 @@ public class Canido extends Mascota{
 	}
 
 	
+	@Override
+	protected String getTypeClass() {
+		return getClass().getName();
+	}
 	
+	@Override
+	public String toString() {
+		return super.toString() + " tipo Canido"; 
+	}
 }
