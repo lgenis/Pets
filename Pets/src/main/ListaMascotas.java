@@ -1,5 +1,6 @@
 package main;
 
+@Deprecated
 public class ListaMascotas {
 	
 	private Mascota[] arrayMascotas;
@@ -19,6 +20,7 @@ public class ListaMascotas {
 	}
 	
 	public Mascota get(int index){
+		checkIndex(index);
 		return arrayMascotas[index];
 	}
 
@@ -33,21 +35,31 @@ public class ListaMascotas {
 		return index; 
 	}
 	
+	/**Si el entero es menor que cero o si el entero es mayor que length del
+	 * arreglo lanza una excepcion Runtime con un mensaje para el programador
+	 * @param index 
+	 */
+	public void checkIndex(int index){
+		if (index<0 || index>=this.size())
+			throw new RuntimeException("Indice fuera de rango");
+	}
+	
 	public void remove(Mascota mascota) {
 		int index = indexOf(mascota);
 		remove(index);
 	}	
 	
 	public void remove(int index){
+		checkIndex(index);
+		
 		Mascota copyMascotas[] = new Mascota[arrayMascotas.length-1];
-	
-			int j=0;
-			for(int i=0;i<arrayMascotas.length;i++){
-				if(i!=index){
-					copyMascotas[j++]=arrayMascotas[i];
-				}
+		int j=0;
+		for(int i=0;i<arrayMascotas.length;i++){
+			if(i!=index){
+				copyMascotas[j++]=arrayMascotas[i];
 			}
-			arrayMascotas = copyMascotas;
+		}
+		arrayMascotas = copyMascotas;
 		
 	}
 	

@@ -1,5 +1,7 @@
 package test;
 
+import java.util.ArrayList;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -8,22 +10,23 @@ import main.Ave;
 import main.Canido;
 import main.Felino;
 import main.ListaMascotas;
+import main.Mascota;
 import main.Person;
 import main.Roedor;
 
-public class TestDataFile {
+public class TestArrayListGson {
 	
 	@Test
-	public void testSaveToFile(){
+	public void testListToJson(){
 		
-		ListaMascotas list = getMockListMascotas();
+		ArrayList<Mascota> list = getMockListMascotas();
 		
 		String strJson = GsonHelper.listaMascotasToJson(list); 
 		Assert.assertNotNull(strJson);
-		ListaMascotas results=null;
+		ArrayList<Mascota> results=null;
 		
 		try{
-		   results = GsonHelper.jsonFromlistaMascotasToJson(strJson); 
+		   results = GsonHelper.jsonFromArrayListMascotaToJson(strJson); 
 		   
 		}catch (Exception e) {
 			e.printStackTrace(); 
@@ -37,10 +40,12 @@ public class TestDataFile {
 	
 	}
 	
+	
+	
 	 
-	public ListaMascotas getMockListMascotas(){
+	public 	ArrayList<Mascota> getMockListMascotas(){
 		
-		ListaMascotas list = new ListaMascotas();  
+		ArrayList<Mascota> list = new ArrayList<Mascota>();  
 		
 		
 		// Mascotas 
