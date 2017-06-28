@@ -55,9 +55,8 @@ public class FileHelper {
 		try{
 			List<String> list = readSmallTextFile(aFileName);
 			int size = list.size(); 
-			String[] fileLines = new String[size]; 
 			for(int i=0; i<size; i++)
-				fileLines[i] = list.get(i); 
+				strBld.append(list.get(i)); 
 			
 			
 			
@@ -79,6 +78,8 @@ public class FileHelper {
 	 * @param aFileName name of file
 	 * @return
 	 */
+	
+	
 	public static boolean writeFile(String[] aLines, String aFileName){
 		boolean done = true; 
 		List<String> list = new ArrayList<String>(aLines.length);
@@ -95,7 +96,28 @@ public class FileHelper {
 		return done; 
 	}
 	
-
+	
+	/**
+	 * Escribe una String en un archivo,
+	 * 
+	 * @param aFileName
+	 * @return
+	 */
+	public static boolean writeFileAsString(String aLine, String aFileName){
+		boolean done = true; 
+		List<String> list = new ArrayList<String>(1);
+		list.add(aLine);
+		
+		try {
+			writeSmallTextFile(list,aFileName);
+		} catch (IOException e) {
+			e.printStackTrace(); 
+			done = false; 
+		} 
+		return done; 
+	}
+	
+	
 	private static List<String> readSmallTextFile(String aFileName) throws IOException {
 	    Path path = Paths.get(aFileName);
 	    return Files.readAllLines(path, ENCODING);

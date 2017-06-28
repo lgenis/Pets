@@ -6,7 +6,7 @@ import java.util.Comparator;
 public class HelperMascota {
 	
 	private ArrayList<Mascota> arrayMascotas;
-	
+	/*
 	public ArrayList<Mascota> findByOwnerName(String name){
 
 		ArrayList<Mascota> retArrayMascota;
@@ -33,7 +33,7 @@ public class HelperMascota {
 		}
 		return retArrayMascota;
 	}
-	
+	*/
 	public static void sortArrayMascotaByLength(ArrayList<Mascota> list){
 		list.sort(new Comparator<Mascota>(){
 
