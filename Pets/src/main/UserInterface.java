@@ -1,18 +1,41 @@
 package main;
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.TreeMap;
+
 import data.Input;
 import data.StringHelper;
 
 public class UserInterface {
 	
+	private static final String[] ESPECIES = new String[]{"gato", "perro", "ave", "roedor"};
+	
+	static Map<String, Class> map = new TreeMap<String, Class>();
+	/** Adicione las clases que sea necesario */
+	 static {
+	        map.put(ESPECIES[0],Felino.class);
+	        map.put(ESPECIES[1],Canido.class);
+	        map.put(ESPECIES[2],Ave.class);
+	        map.put(ESPECIES[3],Roedor.class);
+	    } 
+	 
+	 
 	
 	public interface CheckFormat{
 		boolean checkBadFormat(String str); 
 	}
 	
 	
+	private static CheckFormat  checkFloat  =  new CheckFormat() {
+		@Override
+		public boolean checkBadFormat(String str) {
+			return str.equals("") || !StringHelper.isFloat(str); 
+		}
+	}; 
+	
 	public static  String scannFile(){
-		String filePathandName="C:\\poo\\workspace\\Pets\\Pets.txt";
+		String filePathandName="C:\\poo\\git\\Pets\\Pets.txt";
 		String option;
 		
 		
@@ -26,6 +49,7 @@ public class UserInterface {
 		}
 		return filePathandName;
 	}
+	
 	
 	public static void printfMenu() { 
 		System.out.println("Opciones posibles: (multiples separadas por espacio)");
@@ -41,144 +65,123 @@ public class UserInterface {
 		
 	}
 	
+	
+
+	private static String scannFormat( String label, CheckFormat checkformat){			
+		if(checkformat==null)
+			throw new RuntimeException("El parametro checkformat no puede ser null"); 	
+		String out; 		
+		do{
+			System.out.print("\nIntroduzca un " + label + ": ");
+			out=Input.scannLine();
+		}while(checkformat.checkBadFormat(out)); 		
+		return out;
+	}
+	
+	public static String scannAll(String label){			
+		return   scannFormat(label, new CheckFormat() {			
+			@Override
+			public boolean checkBadFormat(String str) {
+				return true;
+			}
+		}); 
+	}
+
+	private static String scannNoEmpty( String label){
+		return scannFormat(label,new CheckFormat() {			
+			@Override
+			public boolean checkBadFormat(String str) {
+				return str.equals("");
+			}
+		} ); 
+	}
+	
+
+	
+	
+	
+	
 	public static String scannOption() {
-		String input;
-		System.out.println("Seleccione opcion: ('Enter' para ayuda)");
-		input=Input.scannLine();
-		
-		while (input.equals("")){
-			printfMenu();
-			System.out.println("Seleccione opcion: ");
-			input=Input.scannLine();
-		}
-		
+		String input=scannAll("Seleccione opcion: ('Enter' para ayuda)");
 		return input;
 	}
+	
+	
+	
 	
 	public static Person scannPropietario(){
 		String contacto[]=new String[4];
 		
-		contacto[0]=scannLabel("Persona",true);
-		
-		contacto[1]=scannLabel("Telefono",true,new CheckFormat() {
+		contacto[0]=scannFormat("Persona", new CheckFormat(){
 			@Override
-			public boolean checkBadFormat(String str) {
-				return  !str.equals("") || !StringHelper.isInteger(str);
+			public boolean checkBadFormat(String str){
+				return  str.split(" ").length<2 || str.equals("");
 			}
 		});
 		
-		contacto[2]=scannLabel("Email", true, new CheckFormat() {
+		contacto[1]=scannFormat("Telefono",new CheckFormat() {
+			@Override
+			public boolean checkBadFormat(String str) {
+				return  str.equals("") || !StringHelper.isInteger(str);
+			}
+		});
+		
+		contacto[2]=scannFormat("Email",new CheckFormat() {
 			
 			@Override
 			public boolean checkBadFormat(String str) {
-				return !str.equals("") || !StringHelper.isEmail(str);
+				return str.equals("") || !StringHelper.isEmail(str);
 			}
 		});
 		
-		contacto[3]=scannLabel("Address", true);
+		contacto[3]=scannNoEmpty("Address");
 		
 		return new Person(contacto[0]+";"+contacto[1]+";"+contacto[2]+";"+contacto[3]);
 	}
 	
 	
-		private static String scannLabel( String label, boolean compulsory, CheckFormat checkformat){			
-			if(checkformat==null)
-				throw new RuntimeException("El parametro checkformat no puede ser null"); 
-			
-			System.out.print("\n" + label + ": ");
-			String out = Input.scannLine();
-			if (compulsory){
-				do{
-					System.out.print("\nIntroduzca un " + label + ": ");
-					out=Input.scannLine();
-				}while(checkformat.checkBadFormat(out)); 
-			}
-			return out;
-		}
 	
-		private static String scannLabel(String label, boolean compulsory){	   
-			return  scannLabel(label, compulsory, new CheckFormat() {
-				@Override
-				public boolean checkBadFormat(String str) {
-					return str.equals(""); 
-				}
-			});
-		}
-		
-		
-		
-		/*private static String scannName(boolean compulsory){
-			System.out.print("\nNombre: ");
-			String out = Input.scannLine();
-			if (compulsory){
-				while(out.equals("")){
-					System.out.print("\nIntroduzca un nombre: ");
-					out=Input.scannLine();
-				}
-			}
-			return out;
-		}*/
-		/*
-		private static String scannEmail(boolean compulsory){
-	
-			System.out.print("\nEmail: ");
-			String email=Input.scannLine();
-			if(compulsory && email.equals("")){
-				while(!StringHelper.isEmail(email)){
-					System.out.println("El email tiene que ser "
-							+ "email.");
-					email=Input.scannLine();
-				}
-			}
-			return email;
-		}*/
-		
-		/*
-		private static String scannTelf(boolean compulsory){
-			System.out.print("\nTelefono: ");
-			String telf = Input.scannLine();
-			if (compulsory && !telf.equals("")){
-				while(!StringHelper.isInteger(telf)){
-					System.out.println("El telefono tiene que ser "
-							+ "numerico. No se admiten letras o "
-							+ "simbolos");
-					telf=Input.scannLine();
-				}
-			}
-			return telf;
-		}*/
-		/*
-		private static String scannAddrs(boolean compulsory){
-			System.out.print("\nDireccion: ");
-			String adrs = Input.scannLine();
-			if (compulsory ){
-				while(adrs.equals("")){
-					System.out.print("\nIntroduzca una direccion: ");
-					adrs=Input.scannLine();
-				}
-			}
-			return adrs;
-		}*/
-		
-		
-		
+				
+	@SuppressWarnings("unused")
 		public static Mascota scannMascota(){
-						
-			String nombre=scannLabel("Nombre Mascota", true);
 			
-			String peso =  scannLabel("Peso", true, new CheckFormat() {
+			String especies = Arrays.toString(ESPECIES);
+			
+			String especie=scannFormat("Especie " + especies, new CheckFormat() {
 				
 				@Override
-				public boolean checkBadFormat(String str) {
-					// TODO Auto-generated method stub
-					return str.equals("") || !StringHelper.isInteger(str);
+				public boolean checkBadFormat(String especie) {
+					Class typeClass = map.get(especie);  
+					return typeClass==null;
 				}
 			}); 
-			//float altura = new ScannNum("Altura", true).getValue();  
-			//float largo = new ScannNum("Largo", true).getValue();
-		
-			//return new Ave(nombre, peso, altura, largo);
 			
+			String nombre=scannNoEmpty("Nombre Mascota");
+			
+			String pesoStr = scannFormat("Peso",  checkFloat); 
+			float peso=Float.valueOf(pesoStr);
+			
+			String alturaStr = scannFormat("Altura",  checkFloat);
+			float altura=Float.valueOf(alturaStr);
+			
+			String largoStr = scannFormat("Largo",  checkFloat);
+			float largo=Float.valueOf(largoStr);
+			
+			 Class typeClass = map.get(especie);  
+			 
+			 Mascota mascota  = null; 
+			 try {
+				 mascota = (Mascota) typeClass.newInstance();
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+				System.exit(1);
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.exit(1);
+			}
+
+			//return new Ave(nombre, peso, altura, largo);
 			
 			return null;
 		}

@@ -12,6 +12,12 @@ public class Ave extends Mascota {
 		// TODO Auto-generated constructor stub
 	}
 	
+	public Ave(){
+		super(); 
+	}
+	
+	
+	
 	@Override
 	public float getEstadoNutricion() {
 	

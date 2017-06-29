@@ -10,6 +10,11 @@ public class Roedor extends Mascota {
 	}
 	
 	
+	public Roedor(){
+		super(); 
+	}
+	
+	
 	@Override
 	public float getEstadoNutricion() {
 		return getPeso()/(0.3f*getAltura()*getLargo());

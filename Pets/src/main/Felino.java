@@ -13,6 +13,10 @@ public class Felino extends Mascota {
 		this.calidadGarras= 1;
 	}
 	
+	public Felino(){
+		super(); 
+	}
+	
 	@Override
 	public float getEstadoNutricion() {
 		 return getPeso()/(getAltura()*getLargo());

@@ -33,7 +33,7 @@ import main.Roedor;
  */
 public class GsonHelper {
 	
-	private static Map<String, Class> map = new TreeMap<String, Class>();
+	 static Map<String, Class> map = new TreeMap<String, Class>();
 	
 	
 	/** Adicione las clases que sea necesario */

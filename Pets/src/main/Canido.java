@@ -16,7 +16,9 @@ public class Canido extends Mascota{
 		super(nombre);
 	}
 	
-		
+	public Canido(){
+		super(); 
+	}
 	
 	//Este metodo es comun en todas las mascotas PERO se calcula diferente:
 	@Override

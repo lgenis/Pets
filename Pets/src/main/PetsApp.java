@@ -23,20 +23,22 @@ public class PetsApp {
 		
 		UserInterface.printfMenu();
 		
+		//Mascota masco = UserInterface.scannMascota();
 		
-	/*do{
+		
+	do{
 			
 			String key = UserInterface.scannOption();
 			
 			switch (key) {
-			
+			/*	
 				case "-a": 
 					
-					list.add(UserInterface.scannContact()); 
+					list.add(UserInterface.scannMascota()); 
 					FileHelper.writeFile(list.toFileFormatList(), file_Name);
 					
 					break;
-					
+				
 				case "-e":
 					Person editPerson = null;
 					System.out.println("Introduzca nombre completo registro a editar:");
@@ -80,7 +82,7 @@ public class PetsApp {
 					UserInterface.returnFound(tempList);
 					break;
 			
-					
+				*/	
 				case "exit":
 					exit = true; 
 					break;
@@ -91,7 +93,7 @@ public class PetsApp {
 					break;
 				}
 			
-		}while(!exit);  */
+		}while(!exit);  
 		
 	}
 

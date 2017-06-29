@@ -11,6 +11,17 @@ public class StringHelper {
 		}return true;
 	}
 	
+	public static boolean isFloat(String num){
+		boolean isFloat=false;
+		try{
+			Float.valueOf(num);
+			isFloat=true;
+		}catch (NumberFormatException e) {
+			isFloat=false;
+		}
+		return isFloat;
+	}
+	
 	public static boolean isEmail(String email){
 		char[] chrByChr = email.toCharArray();
 		boolean arroba=false;
