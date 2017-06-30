@@ -61,7 +61,7 @@ public class FileHelper {
 			
 			
 		} catch (NoSuchFileException e) {
-			String[] strOut = {"Texto de prueba"};
+			String[] strOut = {""};
 			writeFile( strOut , aFileName);
 		} catch (IOException e){
 			e.printStackTrace(); 

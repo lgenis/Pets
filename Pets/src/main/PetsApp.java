@@ -3,42 +3,42 @@ package main;
 import java.util.ArrayList;
 
 import data.FileHelper;
+import data.Finder;
+import data.Finder.ContainsChecker;
 import data.GsonHelper;
+import data.Input;
 
 public class PetsApp {
+	
 
 	public static void main(String[] args) {
 		String file_Name=UserInterface.scannFile();
+
 		String strJsonPets = FileHelper.readFileAsString(file_Name);
-		
-		if(strJsonPets==null)
-			strJsonPets = ""; 
-		
+	
 
 		ArrayList<Mascota> list = 
 				GsonHelper.jsonFromArrayListMascotaToJson(strJsonPets);
-		Person tempList[] = null;
+		
 		
 		boolean exit=false; 
 		
 		UserInterface.printfMenu();
 		
-		//Mascota masco = UserInterface.scannMascota();
 		
 		
-	do{
-			
+		
+		do{
 			String key = UserInterface.scannOption();
-			
 			switch (key) {
-			/*	
+				
 				case "-a": 
 					
 					list.add(UserInterface.scannMascota()); 
-					FileHelper.writeFile(list.toFileFormatList(), file_Name);
+					FileHelper.writeFileAsString(GsonHelper.listaMascotasToJson(list),file_Name);
 					
 					break;
-				
+				/*
 				case "-e":
 					Person editPerson = null;
 					System.out.println("Introduzca nombre completo registro a editar:");
@@ -54,14 +54,31 @@ public class PetsApp {
 					
 					
 					break;
-					
+				*/
 				case "-r":
-					Person foundPerson = null;
+					
 					System.out.println("Introduzca nombre completo registro a eliminar:");
-					foundPerson=list.findByFullName(UserInterface.scannName(true));
-					if (foundPerson!=null){
-						list.remove(foundPerson);
+					ArrayList<Mascota> foundMascotas = new ArrayList<Mascota>();
+					
+					Finder<Mascota> findMascotas = new Finder<Mascota>();
+					
+					String mascRemove=UserInterface.scannNoEmpty("Nombre Propietario").toLowerCase();
+							
+					foundMascotas=findMascotas.find(list, mascRemove, new ContainsChecker<Mascota>() {
+
+								@Override
+								public boolean containChecker(Mascota object, Object patron) {
+									return object.getPropietario().getFullName().toLowerCase()
+											.contains((String) patron);
+								}
+					});
+							
+
+					if (foundMascotas!=null){
+						Mascota remMasc=UserInterface.scannSeleccion(foundMascotas);
 						
+						//list.remove(remMasc);
+
 					}else{
 						System.out.println("NOT found");
 					}
@@ -69,15 +86,16 @@ public class PetsApp {
 					break;
 					
 				case "-l":
-					UserInterface.printList(list.sort()); 
+					UserInterface.printList(list); 
 					break;
+					/*
+				case "-son":
 					
-				case "-sn":
-					tempList =list.findByName(UserInterface.scannName(true));
-					UserInterface.returnFound(tempList);
+					//tempList =list.findByName(UserInterface.scannNoEmpty("Persona (nombre)"));
+					//UserInterface.returnFound(tempList);
 					break;
-					
-				case "-se":
+						
+				case "-soe":
 					tempList = list.findByEmail(UserInterface.scannEmail(true));
 					UserInterface.returnFound(tempList);
 					break;

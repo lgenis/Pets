@@ -92,6 +92,7 @@ public class GsonHelper {
 		Gson gson = builder.create(); 
 		Type typeToken = new TypeToken<ArrayList<Mascota>>(){}.getType();  
 		ArrayList<Mascota> list = gson.fromJson(strJson,typeToken); 
+		list=list==null?new ArrayList<Mascota>():list;
 		return list;
 	}
 	

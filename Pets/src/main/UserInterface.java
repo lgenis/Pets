@@ -1,5 +1,6 @@
 package main;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
@@ -10,6 +11,7 @@ import data.StringHelper;
 public class UserInterface {
 	
 	private static final String[] ESPECIES = new String[]{"gato", "perro", "ave", "roedor"};
+		
 	
 	static Map<String, Class> map = new TreeMap<String, Class>();
 	/** Adicione las clases que sea necesario */
@@ -19,8 +21,21 @@ public class UserInterface {
 	        map.put(ESPECIES[2],Ave.class);
 	        map.put(ESPECIES[3],Roedor.class);
 	    } 
-	 
-	 
+	
+	 static Map<String, String> menu = new TreeMap<String, String>();
+		/** Adicione las clases que sea necesario */
+		 static {
+			 	menu.put("", "tecla 'Enter muestra ayuda");
+		        menu.put("-h","muestra esta ayuda");
+		        menu.put("-a","annade pet");
+		        menu.put("-l","lista de pets por nombre");
+		        menu.put("-son","busca pet por nombre propietario");
+		        menu.put("-soe","busca pet por email propietario");
+		        menu.put("-eon","edita pet por nombre propietario");
+		        menu.put("-eoe","edita pet por email propietario");
+		        menu.put("-r","borra pet");
+		        menu.put("exit","sal del programa\n");
+		    } 
 	
 	public interface CheckFormat{
 		boolean checkBadFormat(String str); 
@@ -35,12 +50,12 @@ public class UserInterface {
 	}; 
 	
 	public static  String scannFile(){
-		String filePathandName="C:\\poo\\git\\Pets\\Pets.txt";
+		String filePathandName="DataBase.pet";
 		String option;
 		
 		
 		System.out.println("Introduzca fichero de contactos: "
-				+ "('Enter' para fichero por defecto: " + filePathandName + ")");
+				+ "(Presione tecla 'Enter' para fichero por defecto: " + filePathandName + ")");
 		option=Input.scannLine();
 		
 		//Si usuario no introduce directorio es fichero por defecto
@@ -52,16 +67,10 @@ public class UserInterface {
 	
 	
 	public static void printfMenu() { 
-		System.out.println("Opciones posibles: (multiples separadas por espacio)");
-		System.out.println("\t-h o \'Enter\'\t muestra esta ayuda");
-		System.out.println("\t-a\t annade pet");
-		//System.out.println("\t-l\t lista de contactos");
-		System.out.println("\t-l\t lista de pets por nombre");
-		System.out.println("\t-sn\t busca pet por nombre");
-		System.out.println("\t-se\t busca jpet por email");
-		System.out.println("\t-e\t edita pet");
-		System.out.println("\t-r\t borra pet");
-		System.out.println("\n\texit\t sal del programa\n");
+		System.out.println("Opciones posibles:");
+		for (String key : menu.keySet()){
+			System.out.println("\t" + key + "\t" + menu.get(key));
+		}
 		
 	}
 	
@@ -82,12 +91,12 @@ public class UserInterface {
 		return   scannFormat(label, new CheckFormat() {			
 			@Override
 			public boolean checkBadFormat(String str) {
-				return true;
+				return false;
 			}
 		}); 
 	}
 
-	private static String scannNoEmpty( String label){
+	public static String scannNoEmpty( String label){
 		return scannFormat(label,new CheckFormat() {			
 			@Override
 			public boolean checkBadFormat(String str) {
@@ -102,7 +111,12 @@ public class UserInterface {
 	
 	
 	public static String scannOption() {
-		String input=scannAll("Seleccione opcion: ('Enter' para ayuda)");
+		String input=null;
+		do{
+			input=scannAll("opcion: "
+				+ "(Presionando " + menu.get("")+")");
+		}while(!menu.containsKey(input));
+		
 		return input;
 	}
 	
@@ -112,7 +126,7 @@ public class UserInterface {
 	public static Person scannPropietario(){
 		String contacto[]=new String[4];
 		
-		contacto[0]=scannFormat("Persona", new CheckFormat(){
+		contacto[0]=scannFormat("Persona (Nombre y Apellido)", new CheckFormat(){
 			@Override
 			public boolean checkBadFormat(String str){
 				return  str.split(" ").length<2 || str.equals("");
@@ -143,50 +157,137 @@ public class UserInterface {
 	
 				
 	@SuppressWarnings("unused")
-		public static Mascota scannMascota(){
+	public static Mascota scannMascota(){
+		
+		String especies = Arrays.toString(ESPECIES);
+		
+		String especie=scannFormat("Especie " + especies, new CheckFormat() {
 			
-			String especies = Arrays.toString(ESPECIES);
-			
-			String especie=scannFormat("Especie " + especies, new CheckFormat() {
+			@Override
+			public boolean checkBadFormat(String especie) {
+				Class typeClass = map.get(especie.toLowerCase());  
+				return typeClass==null;
+			}
+		});
+		
+		String nombre=scannNoEmpty("Nombre Mascota");
+		
+		String pesoStr = scannFormat("Peso",  checkFloat); 
+		float peso=Float.valueOf(pesoStr);
+		
+		String alturaStr = scannFormat("Altura",  checkFloat);
+		float altura=Float.valueOf(alturaStr);
+		
+		String largoStr = scannFormat("Largo",  checkFloat);
+		float largo=Float.valueOf(largoStr);
+		
+		Class typeClass = map.get(especie);  
+		 
+		Mascota mascota  = null; 
+		try {
+			 mascota = (Mascota) typeClass.newInstance();
+		}catch (InstantiationException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.exit(1);
+		}
+		 
+		Person duenno = scannPropietario();
+		
+		mascota.setNombre(nombre);
+		mascota.setPeso(peso);
+		mascota.setAltura(altura);
+		mascota.setLargo(largo);
+		mascota.setPropietario(duenno);
+		return mascota;
+	}
+	
+	public static Mascota scannSeleccion(ArrayList<Mascota> lista){
+		int inp=0;
+		if (lista.size()!=1){
+			String strInp=scannFormat("indice", new CheckFormat() {
 				
 				@Override
-				public boolean checkBadFormat(String especie) {
-					Class typeClass = map.get(especie);  
-					return typeClass==null;
+				public boolean checkBadFormat(String str) {
+
+					if (!StringHelper.isInteger(str)){
+						return true;
+					}
+					return (Integer.valueOf(str)<1 || Integer.valueOf(str)>lista.size());
 				}
-			}); 
+			});
+			inp=Integer.valueOf(strInp)-1;
 			
-			String nombre=scannNoEmpty("Nombre Mascota");
-			
-			String pesoStr = scannFormat("Peso",  checkFloat); 
-			float peso=Float.valueOf(pesoStr);
-			
-			String alturaStr = scannFormat("Altura",  checkFloat);
-			float altura=Float.valueOf(alturaStr);
-			
-			String largoStr = scannFormat("Largo",  checkFloat);
-			float largo=Float.valueOf(largoStr);
-			
-			 Class typeClass = map.get(especie);  
-			 
-			 Mascota mascota  = null; 
-			 try {
-				 mascota = (Mascota) typeClass.newInstance();
-			} catch (InstantiationException e) {
-				e.printStackTrace();
-				System.exit(1);
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				System.exit(1);
-			}
-
-			//return new Ave(nombre, peso, altura, largo);
-			
-			return null;
 		}
+		System.out.println("Se eliminara:");
+		ArrayList<Mascota> printMasc = new ArrayList<Mascota>();
 		
-
+		printMasc.add(lista.get(inp));
+		printListWithNum(printMasc);
 		
+		return lista.get(inp);
+	}
+	
+	public static void printList(ArrayList<Mascota> lista){
+		boolean printDuenno=false;
+		String ans=null;
+		
+		do{
+			System.out.println("Desea mostrar duennos tambien en la lista? (si/no)");
+			ans=Input.scannLine().trim().toLowerCase();
+			
+		}while(!(ans.equals("si") || ans.equals("no")));
+		
+		printDuenno=ans.equals("si")?true:false;
+		
+		StringBuffer out=new StringBuffer("Nombre mascota\tPeso\tAltura\tLargo\t\t");
+		if (printDuenno){
+			out.append("Nombre duenno\tTelefono\tEmail\t\t\tAddress\t\t");
+		}out.append("\n");
+		
+		for (Mascota masc: lista){
+			out.append(masc.getNombre() + "\t\t");
+			out.append(masc.getPeso() + "\t");
+			out.append(masc.getAltura() + "\t");
+			out.append(masc.getLargo() + "\t\t");
+			if (printDuenno){
+				out.append(masc.getPropietario().getFullName() + "\t");
+				out.append(masc.getPropietario().getPhone() + "\t");
+				out.append(masc.getPropietario().getEmail() + "\t");
+				out.append(masc.getPropietario().getAddress() + "\t");
+			}	
+			out.append("\n");
+		}
+		System.out.println(out.toString());
+	}
+	
+	public static void printListWithNum(ArrayList<Mascota> lista){
+		boolean printDuenno=true;
+				
+		
+		StringBuffer out=new StringBuffer("Index\tNombre mascota\tPeso\tAltura\tLargo\t\t");
+		if (printDuenno){
+			out.append("Nombre duenno\tTelefono\tEmail\t\t\tAddress\t\t");
+		}out.append("\n");
+		
+		for (int i=0; i<lista.size(); i++){
+			out.append((i+1) +" :\t");
+			out.append(lista.get(i).getNombre() + "\t\t");
+			out.append(lista.get(i).getPeso() + "\t");
+			out.append(lista.get(i).getAltura() + "\t");
+			out.append(lista.get(i).getLargo() + "\t\t");
+			if (printDuenno){
+				out.append(lista.get(i).getPropietario().getFullName() + "\t");
+				out.append(lista.get(i).getPropietario().getPhone() + "\t");
+				out.append(lista.get(i).getPropietario().getEmail() + "\t");
+				out.append(lista.get(i).getPropietario().getAddress() + "\t");
+			}	
+			out.append("\n");
+		}
+		System.out.println(out.toString());
+	}
 		
 }
