@@ -32,7 +32,7 @@ public class UserInterface {
 		        menu.put("-son","busca pet por nombre propietario");
 		        menu.put("-soe","busca pet por email propietario");
 		        menu.put("-eon","edita pet por nombre propietario");
-		        menu.put("-eoe","edita pet por email propietario");
+		        menu.put("-en","edita pet por nombre mascota");
 		        menu.put("-r","borra pet");
 		        menu.put("exit","sal del programa\n");
 		    } 
@@ -205,9 +205,23 @@ public class UserInterface {
 		return mascota;
 	}
 	
+	public static boolean scannConfirm(){
+		String ans;
+		do{
+			System.out.println("Esta seguro? (si/no)");
+			ans=Input.scannLine().trim().toLowerCase();
+			
+		}while(!(ans.equals("si") || ans.equals("no")));
+		
+		return ans.equals("si")?true:false;
+	}
+	
 	public static Mascota scannSeleccion(ArrayList<Mascota> lista){
 		int inp=0;
+		ArrayList<Mascota> printMasc = new ArrayList<Mascota>();
 		if (lista.size()!=1){
+			printListWithNum(lista);
+			
 			String strInp=scannFormat("indice", new CheckFormat() {
 				
 				@Override
@@ -222,28 +236,55 @@ public class UserInterface {
 			inp=Integer.valueOf(strInp)-1;
 			
 		}
-		System.out.println("Se eliminara:");
-		ArrayList<Mascota> printMasc = new ArrayList<Mascota>();
 		
+		System.out.println("Se eliminara/editara:");
+		printMasc = new ArrayList<Mascota>();
 		printMasc.add(lista.get(inp));
 		printListWithNum(printMasc);
 		
-		return lista.get(inp);
+		
+		
+		return scannConfirm()?lista.get(inp):null;
+	}
+	
+	public static Mascota editSelection(Mascota masc){
+		Mascota newMasc = scannMascota();
+		Person newDuenno = newMasc.getPropietario();
+		
+		if (newMasc.getNombre().isEmpty()){
+			newMasc.setNombre(masc.getNombre());
+		}
+		if (newMasc.getPeso()==0){
+			newMasc.setPeso(masc.getPeso());
+		}
+		if (newMasc.getAltura()==0){
+			newMasc.setAltura(masc.getAltura());
+		}
+		if (newMasc.getLargo()==0){
+			newMasc.setLargo(masc.getLargo());
+		}
+		if (newDuenno.getFullName()==""){
+			newDuenno.setSurname(masc.getPropietario().getSurname());
+			newDuenno.setName(masc.getPropietario().getName());
+		}
+		if (newDuenno.getEmail()==""){
+			newDuenno.setEmail(masc.getPropietario().getEmail());
+		}
+		if (newDuenno.getPhone()==""){
+			newDuenno.setPhone(masc.getPropietario().getPhone());
+		}
+		if (newDuenno.getAddress()==""){
+			newDuenno.setAddress(masc.getPropietario().getAddress());
+		}
+		return newMasc;
 	}
 	
 	public static void printList(ArrayList<Mascota> lista){
 		boolean printDuenno=false;
-		String ans=null;
+		System.out.println("Mostrar duennos:");
+		printDuenno = scannConfirm();
 		
-		do{
-			System.out.println("Desea mostrar duennos tambien en la lista? (si/no)");
-			ans=Input.scannLine().trim().toLowerCase();
-			
-		}while(!(ans.equals("si") || ans.equals("no")));
-		
-		printDuenno=ans.equals("si")?true:false;
-		
-		StringBuffer out=new StringBuffer("Nombre mascota\tPeso\tAltura\tLargo\t\t");
+		StringBuffer out = new StringBuffer("Nombre mascota\tPeso\tAltura\tLargo\t\t");
 		if (printDuenno){
 			out.append("Nombre duenno\tTelefono\tEmail\t\t\tAddress\t\t");
 		}out.append("\n");
