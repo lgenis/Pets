@@ -24,23 +24,23 @@ public abstract class Mascota {
 	private float largo;
 	
 	public Mascota(){
-		typeClass=getTypeClass();
+		typeClass = getTypeClass();
 	}
 	
 	
 	public Mascota(String nombre, float peso, float altura, float largo){
-		typeClass=getTypeClass();
-		this.nombre=nombre;
-		this.peso=peso;
-		this.altura=altura;
-		this.largo=largo;
+		typeClass = getTypeClass();
+		this.nombre = nombre;
+		this.peso = peso;
+		this.altura = altura;
+		this.largo = largo;
 		
 	}
 	
 
 	public Mascota(String nombre){
-		typeClass= getTypeClass(); 
-		this.setNombre(nombre); 
+		typeClass = getTypeClass(); 
+		this.setNombre(nombre);
 	}
 	
 
@@ -54,6 +54,7 @@ public abstract class Mascota {
 	 * @return
 	 */
 	protected abstract String getTypeClass(); 
+	
 	/**
 	 * Metodo abstracto que debe ser definido en las clases que extienden
 	 * de esta clase (Mascota). 
