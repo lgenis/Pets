@@ -35,25 +35,15 @@ public class PetsApp {
 				
 				case "-a": 
 					
-					list.add(UserInterface.scannMascota()); 
+					list.add(UserInterface.scannMascota(false)); 
 					
 					break;
 				
 				case "-eon":
-					//TODO not working forced to enter stuff
 					foundMascotas = findByOwnerName(list);
 					if (!foundMascotas.isEmpty()){
-						Mascota newMascota;
-						Mascota oldMascota;
-						//UserInterface.printList(foundMascotas);
-						System.out.println("Edite los campos necesarios. Si no desea "
-								+ "cambiar un campo, dejelo en blanco.");
-						oldMascota=UserInterface.scannSeleccion(foundMascotas);
-						newMascota=UserInterface.editSelection(oldMascota);
-						list.remove(oldMascota);
-						list.add(newMascota);
-		
-						
+						editor(foundMascotas, list);
+
 					}else{
 						System.out.println("NOT found");
 					}
@@ -61,7 +51,13 @@ public class PetsApp {
 					break;
 				
 				case "-en":
-					
+					foundMascotas = findByName(list);
+					if (!foundMascotas.isEmpty()){
+						editor(foundMascotas, list);
+
+					}else{
+						System.out.println("NOT found");
+					}
 					break;
 					
 				case "-r":
@@ -114,6 +110,7 @@ public class PetsApp {
 		}while(!exit);  
 		FileHelper.writeFileAsString(GsonHelper.listaMascotasToJson(list), file_Name);
 	}
+	
 	private static ArrayList<Mascota> findByOwnerName(ArrayList<Mascota> list){
 		Finder<Mascota> findMascotas = new Finder<Mascota>();
 		
@@ -130,6 +127,7 @@ public class PetsApp {
 					}
 		}));
 	}
+	
 	private static ArrayList<Mascota> findByOwnerEmail(ArrayList<Mascota> list){
 		Finder<Mascota> findMascotas = new Finder<Mascota>();
 		
@@ -145,6 +143,35 @@ public class PetsApp {
 								.contains((String) patron);
 					}
 		}));
+	}
+	
+	private static ArrayList<Mascota> findByName(ArrayList<Mascota> list){
+		Finder<Mascota> findMascotas = new Finder<Mascota>();
+		
+		System.out.println("Introduzca nombre mascota a buscar:");
+
+		String mascRemove=UserInterface.scannNoEmpty("Nombre Mascota").toLowerCase();
+				
+		return (findMascotas.find(list, mascRemove, new ContainsChecker<Mascota>() {
+
+					@Override
+					public boolean containChecker(Mascota object, Object patron) {
+						return object.getNombre().toLowerCase()
+								.contains((String) patron);
+					}
+		}));
+	}
+	
+	private static void editor(ArrayList<Mascota> foundMascotas, ArrayList<Mascota> list){
+		Mascota newMascota;
+		Mascota oldMascota;
+		
+		System.out.println("Edite los campos necesarios. Si no desea "
+				+ "cambiar un campo, dejelo en blanco.");
+		oldMascota=UserInterface.scannSeleccion(foundMascotas);
+		newMascota=UserInterface.editSelection(oldMascota);
+		list.remove(oldMascota);
+		list.add(newMascota);
 	}
 
 }

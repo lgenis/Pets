@@ -49,6 +49,13 @@ public class UserInterface {
 		}
 	}; 
 	
+	private static CheckFormat  checkFloatEdit  =  new CheckFormat() {
+		@Override
+		public boolean checkBadFormat(String str) {
+			return !StringHelper.isFloat(str)&&!str.equals(""); 
+		}
+	}; 
+	
 	public static  String scannFile(){
 		String filePathandName="DataBase.pet";
 		String option;
@@ -123,20 +130,22 @@ public class UserInterface {
 	
 	
 	
-	public static Person scannPropietario(){
+	public static Person scannPropietario(boolean editMode){
 		String contacto[]=new String[4];
 		
 		contacto[0]=scannFormat("Persona (Nombre y Apellido)", new CheckFormat(){
 			@Override
 			public boolean checkBadFormat(String str){
-				return  str.split(" ").length<2 || str.equals("");
+				return  editMode?str.split(" ").length<2&&!str.equals("")
+						:str.split(" ").length<2 || str.equals("");
 			}
 		});
 		
 		contacto[1]=scannFormat("Telefono",new CheckFormat() {
 			@Override
 			public boolean checkBadFormat(String str) {
-				return  str.equals("") || !StringHelper.isInteger(str);
+				return  editMode?!StringHelper.isInteger(str)
+						:str.equals("") || !StringHelper.isInteger(str);
 			}
 		});
 		
@@ -144,20 +153,23 @@ public class UserInterface {
 			
 			@Override
 			public boolean checkBadFormat(String str) {
-				return str.equals("") || !StringHelper.isEmail(str);
+				return editMode?!StringHelper.isEmail(str)&&!str.equals("")
+						:str.equals("") || !StringHelper.isEmail(str);
 			}
 		});
 		
-		contacto[3]=scannNoEmpty("Address");
+		contacto[3]=editMode?scannAll("Address"):scannNoEmpty("Address");
 		
-		return new Person(contacto[0]+";"+contacto[1]+";"+contacto[2]+";"+contacto[3]);
+		return new Person((contacto[0].isEmpty()?" ":contacto[0])+";"+
+						(contacto[1].isEmpty()?" ":contacto[1])+";"+
+						(contacto[2].isEmpty()?" ":contacto[2])+";"+
+						(contacto[3].isEmpty()?" ":contacto[3]));
 	}
 	
 	
 	
 				
-	@SuppressWarnings("unused")
-	public static Mascota scannMascota(){
+	public static Mascota scannMascota(boolean editMode){
 		
 		String especies = Arrays.toString(ESPECIES);
 		
@@ -166,23 +178,28 @@ public class UserInterface {
 			@Override
 			public boolean checkBadFormat(String especie) {
 				Class typeClass = map.get(especie.toLowerCase());  
+				//return editMode?typeClass==null&&!especie.equals(""):typeClass==null;
 				return typeClass==null;
 			}
 		});
 		
-		String nombre=scannNoEmpty("Nombre Mascota");
+		String nombre=editMode?scannAll("Nombre Mascota"):scannNoEmpty("Nombre Mascota");
 		
-		String pesoStr = scannFormat("Peso",  checkFloat); 
-		float peso=Float.valueOf(pesoStr);
+		String pesoStr = scannFormat("Peso",  editMode?checkFloatEdit:checkFloat); 
+		float peso = StringHelper.strToFloat(pesoStr);
 		
-		String alturaStr = scannFormat("Altura",  checkFloat);
-		float altura=Float.valueOf(alturaStr);
+		String alturaStr = scannFormat("Altura",  editMode?checkFloatEdit:checkFloat);
+		float altura=StringHelper.strToFloat(alturaStr);
 		
-		String largoStr = scannFormat("Largo",  checkFloat);
-		float largo=Float.valueOf(largoStr);
+		String largoStr = scannFormat("Largo", editMode?checkFloatEdit:checkFloat);
+		float largo=StringHelper.strToFloat(largoStr);
 		
-		Class typeClass = map.get(especie);  
-		 
+		Class typeClass;
+		//if (!especie.equals(""))
+			typeClass = map.get(especie);  
+		//else
+		//	typeClass=Mascota.class;
+		
 		Mascota mascota  = null; 
 		try {
 			 mascota = (Mascota) typeClass.newInstance();
@@ -195,7 +212,7 @@ public class UserInterface {
 			System.exit(1);
 		}
 		 
-		Person duenno = scannPropietario();
+		Person duenno = scannPropietario(editMode);
 		
 		mascota.setNombre(nombre);
 		mascota.setPeso(peso);
@@ -242,38 +259,36 @@ public class UserInterface {
 		printMasc.add(lista.get(inp));
 		printListWithNum(printMasc);
 		
-		
-		
 		return scannConfirm()?lista.get(inp):null;
 	}
 	
 	public static Mascota editSelection(Mascota masc){
-		Mascota newMasc = scannMascota();
+		Mascota newMasc = scannMascota(true);
 		Person newDuenno = newMasc.getPropietario();
 		
 		if (newMasc.getNombre().isEmpty()){
 			newMasc.setNombre(masc.getNombre());
 		}
-		if (newMasc.getPeso()==0){
+		if (newMasc.getPeso()==-1){
 			newMasc.setPeso(masc.getPeso());
 		}
-		if (newMasc.getAltura()==0){
+		if (newMasc.getAltura()==-1){
 			newMasc.setAltura(masc.getAltura());
 		}
-		if (newMasc.getLargo()==0){
+		if (newMasc.getLargo()==-1){
 			newMasc.setLargo(masc.getLargo());
 		}
-		if (newDuenno.getFullName()==""){
+		if (newDuenno.getFullName().equals(" ")){
 			newDuenno.setSurname(masc.getPropietario().getSurname());
 			newDuenno.setName(masc.getPropietario().getName());
 		}
-		if (newDuenno.getEmail()==""){
+		if (newDuenno.getEmail().equals(" ")){
 			newDuenno.setEmail(masc.getPropietario().getEmail());
 		}
-		if (newDuenno.getPhone()==""){
+		if (newDuenno.getPhone().equals(" ")){
 			newDuenno.setPhone(masc.getPropietario().getPhone());
 		}
-		if (newDuenno.getAddress()==""){
+		if (newDuenno.getAddress().equals(" ")){
 			newDuenno.setAddress(masc.getPropietario().getAddress());
 		}
 		return newMasc;

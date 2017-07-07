@@ -35,4 +35,9 @@ public class StringHelper {
 			}
 		}return false;
 	}
+	
+	public static Float strToFloat(String str){
+		return str.isEmpty()||!isFloat(str)?-1f:Float.valueOf(str);
+		
+	}
 }

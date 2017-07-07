@@ -37,12 +37,17 @@ public class Person {
 			throw new RuntimeException("Formato incorrecto en contactFileForm");
 		
 		String fullName[] = values[0].split(" ");
-		
+		if (fullName.length!=0){
 		String nombre = fullName.length==2?fullName [0]:values[0];
 		String apellido = fullName.length==2?fullName[1]:"";
-			
+		
 		setName(nombre);
 		setSurname(apellido);
+		}else{
+			setName("");
+			setSurname("");
+		}
+			
 		
 		setPhone(values[1]);
 		setEmail(values[2]);
